@@ -5,7 +5,7 @@ from typing import Any
 import httpx
 
 from payflow.schemas.bank import BankTransactionPayload, BankTransactionResponse
-from payflow.schemas.domain import CardNetwork, Currency, TransactionStatus
+from payflow.schemas.domain import CardNetwork, Currency
 
 logger = logging.getLogger(__name__)
 
@@ -138,4 +138,4 @@ class BankResponseError(BankClientError):
 
 class BankNetworkError(BankClientError):
     def __init__(self, reference: str) -> None:
-        super().__init__(reference, f"Network error for trans
+        super().__init__(reference, f"Network error for transaction {reference}")
