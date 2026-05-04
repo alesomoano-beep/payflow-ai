@@ -1,15 +1,33 @@
 import logging
+from contextlib import contextmanager
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
 
 from payflow.client import BankClientError, BankTimeoutError
-from payflow.schemas.domain import BatchResult, TransactionRequest, TransactionResult
 from payflow.service import process_batch, process_transaction
+from payflow.schemas.domain import BatchResult, TransactionRequest, TransactionResult
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/payments", tags=["payments"])
+
+
+@contextmanager
+def _handle_bank_errors(log_context: str):
+    try:
+        yield
+    except BankTimeoutError:
+        raise HTTPException(
+            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+            detail="Bank did not respond in time, please retry",
+        )
+    except BankClientError as e:
+        logger.error("Bank error %s: %s", log_context, e)
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Bank returned an unexpected error",
+        )
 
 
 @router.post(
@@ -21,24 +39,11 @@ router = APIRouter(prefix="/payments", tags=["payments"])
 async def authorize(request: TransactionRequest) -> TransactionResult:
     """
     Authorizes a single payment transaction.
-
     - Validates card, amount and currency automatically via Pydantic
     - Returns the result with authorization code or decline reason
     """
-    try:
+    with _handle_bank_errors(f"ref={request.idempotency_key}"):
         return await process_transaction(request)
-
-    except BankTimeoutError:
-        raise HTTPException(
-            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
-            detail="Bank did not respond in time, please retry",
-        )
-    except BankClientError as e:
-        logger.error("Bank error for ref=%s: %s", request.idempotency_key, e)
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Bank returned an unexpected error",
-        )
 
 
 @router.post(
@@ -66,20 +71,8 @@ async def authorize_batch(requests: list[TransactionRequest]) -> BatchResult:
             detail="Batch cannot be empty",
         )
 
-    try:
+    with _handle_bank_errors("batch"):
         return await process_batch(requests)
-
-    except BankTimeoutError:
-        raise HTTPException(
-            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
-            detail="Bank did not respond in time, please retry",
-        )
-    except BankClientError as e:
-        logger.error("Bank error during batch: %s", e)
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Bank returned an unexpected error",
-        )
 
 
 @router.get(

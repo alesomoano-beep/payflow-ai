@@ -58,6 +58,19 @@ async def process_transaction(request: TransactionRequest) -> TransactionResult:
     )
 
 
+def _build_batch_result(results: list[TransactionResult]) -> BatchResult:
+    approved = sum(1 for r in results if r.status == TransactionStatus.APPROVED)
+    declined = sum(1 for r in results if r.status == TransactionStatus.DECLINED)
+    failed = sum(1 for r in results if r.status == TransactionStatus.FAILED)
+    return BatchResult(
+        total=len(results),
+        approved=approved,
+        declined=declined,
+        failed=failed,
+        results=list(results),
+    )
+
+
 async def process_batch(requests: list[TransactionRequest]) -> BatchResult:
     """
     Processes multiple transactions in parallel using asyncio.gather.
@@ -73,17 +86,7 @@ async def process_batch(requests: list[TransactionRequest]) -> BatchResult:
         return_exceptions=False,
     )
 
-    approved = sum(1 for r in results if r.status == TransactionStatus.APPROVED)
-    declined = sum(1 for r in results if r.status == TransactionStatus.DECLINED)
-    failed = sum(1 for r in results if r.status == TransactionStatus.FAILED)
-
-    return BatchResult(
-        total=len(results),
-        approved=approved,
-        declined=declined,
-        failed=failed,
-        results=list(results),
-    )
+    return _build_batch_result(results)
 
 
 async def process_batch_with_limit(
@@ -104,14 +107,4 @@ async def process_batch_with_limit(
         *[_guarded(req) for req in requests]
     )
 
-    approved = sum(1 for r in results if r.status == TransactionStatus.APPROVED)
-    declined = sum(1 for r in results if r.status == TransactionStatus.DECLINED)
-    failed = sum(1 for r in results if r.status == TransactionStatus.FAILED)
-
-    return BatchResult(
-        total=len(results),
-        approved=approved,
-        declined=declined,
-        failed=failed,
-        results=list(results),
-    )
+    return _build_batch_result(results)
