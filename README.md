@@ -50,10 +50,12 @@ curl -X POST http://localhost:8000/payments/authorize \
   -d '{
     "amount": "150.75",
     "currency": "EUR",
-    "card_last4": "4242",
-    "card_network": "VISA",
-    "merchant_id": "merchant_001",
-    "idempotency_key": "txn-abc-123"
+    "card": {
+      "number_last4": "4242",
+      "network": "VISA",
+      "holder_name": "Jane Doe"
+    },
+    "merchant_id": "merchant_001"
   }'
 ```
 
@@ -77,13 +79,20 @@ mypy src/             # type checker
 ```
 payflow-ai/
 ├── src/
-│   └── payflow/
-│       ├── models.py       # Pydantic domain models
-│       ├── service.py      # Business logic, async batch processing
-│       ├── client.py       # Async HTTP client (BankClient)
-│       ├── router.py       # FastAPI endpoints
-│       └── main.py         # App entrypoint and lifespan
-├── tests/
+│   ├── payflow/
+│   │   ├── schemas/
+│   │   │   ├── domain.py   # Domain models: enums, TransactionRequest/Result, BatchResult
+│   │   │   └── bank.py     # Bank API contract models
+│   │   ├── service.py      # Business logic, async batch processing
+│   │   ├── client.py       # Async HTTP client (BankClient)
+│   │   ├── router.py       # FastAPI endpoints
+│   │   └── main.py         # App entrypoint and lifespan
+│   └── tests/
+│       ├── conftest.py
+│       ├── test_models.py
+│       ├── test_service.py
+│       ├── test_router.py
+│       └── test_client.py
 ├── CLAUDE.md
 └── pyproject.toml
 ```
@@ -92,8 +101,8 @@ payflow-ai/
 
 | Phase | Focus | Status |
 |-------|-------|--------|
-| 1 | Modern Python: Pydantic v2, asyncio, FastAPI | In progress |
-| 2 | pytest, mocking, GitHub Actions CI/CD | Pending |
+| 1 | Modern Python: Pydantic v2, asyncio, FastAPI | Done |
+| 2 | pytest, mocking, GitHub Actions CI/CD | In progress |
 | 3 | AI agents with LangGraph, MCP protocol, A2A | Pending |
 | 4 | AWS Lambda, API Gateway, CDK deployment | Pending |
 | 5 | Observability, ADR documentation, portfolio | Pending |
