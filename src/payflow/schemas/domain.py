@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from decimal import Decimal
 from enum import StrEnum
 from uuid import UUID, uuid4
@@ -58,7 +58,7 @@ class TransactionResult(BaseModel):
     amount: Decimal
     currency: Currency
     merchant_id: str
-    processed_at: datetime = Field(default_factory=datetime.utcnow)
+    processed_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     authorization_code: str | None = None
     decline_reason: str | None = None
 

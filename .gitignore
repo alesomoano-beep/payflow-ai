@@ -1,4 +1,7 @@
 src/payflow/__pycache__/
 src/payflow_ai.egg-info/
 src/payflow/schemas/__pycache__
+src/payflow/client.py
+src/tests/__pycache__
+src/.coverage
 

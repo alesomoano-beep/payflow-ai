@@ -61,13 +61,13 @@ async def authorize_batch(requests: list[TransactionRequest]) -> BatchResult:
     """
     if len(requests) > 50:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="Batch size cannot exceed 50 transactions",
         )
 
     if not requests:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="Batch cannot be empty",
         )
 
