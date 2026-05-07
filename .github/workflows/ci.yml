@@ -30,7 +30,7 @@ jobs:
         run: mypy src/
 
       - name: Run tests with coverage
-        run: pytest --cov=payflow --cov-report=term-missing --cov-fail-under=80
+        run: pytest --cov=payflow --cov-report=term-missing --cov-fail-under=82
 
       - name: Coverage report
         if: always()
