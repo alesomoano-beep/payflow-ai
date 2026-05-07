@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 import pytest
+
 from payflow.schemas.domain import (
     CardInfo,
     CardNetwork,
