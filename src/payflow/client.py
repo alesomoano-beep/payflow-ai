@@ -74,7 +74,7 @@ class BankClient:
             reference=reference,
         )
         try:
-            response = await self._client.post("/authorize", json=payload.model_dump())
+            response = await self.client.post("/authorize", json=payload.model_dump())
             response.raise_for_status()
             return BankTransactionResponse(**response.json())
         except httpx.TimeoutException:

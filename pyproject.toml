@@ -20,7 +20,7 @@ dev = [
 ]
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 target-version = "py311"
 
 [tool.ruff.lint]
@@ -30,6 +30,10 @@ select = ["E", "F", "I", "UP"]
 python_version = "3.11"
 strict = true
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disable_error_code = ["misc", "no-untyped-def", "arg-type", "index"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

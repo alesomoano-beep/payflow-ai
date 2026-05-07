@@ -1,9 +1,8 @@
-import pytest
 from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
-
+import pytest
 from payflow.client import (
     BankClient,
     BankNetworkError,
@@ -11,7 +10,6 @@ from payflow.client import (
     BankTimeoutError,
 )
 from payflow.schemas.domain import CardNetwork, Currency
-
 
 API_KEY = "test_api_key"
 MERCHANT_ID = "merchant_001"
@@ -79,7 +77,8 @@ class TestBankClient:
     async def test_timeout_raises_bank_timeout_error(self) -> None:
         async with BankClient(api_key=API_KEY, merchant_id=MERCHANT_ID) as bank:
             with patch.object(
-                bank._client, "post",
+                bank._client,
+                "post",
                 new_callable=AsyncMock,
                 side_effect=httpx.TimeoutException("timeout"),
             ):
@@ -117,7 +116,8 @@ class TestBankClient:
     async def test_network_error_raises_bank_network_error(self) -> None:
         async with BankClient(api_key=API_KEY, merchant_id=MERCHANT_ID) as bank:
             with patch.object(
-                bank._client, "post",
+                bank._client,
+                "post",
                 new_callable=AsyncMock,
                 side_effect=httpx.RequestError("network error"),
             ):
@@ -137,6 +137,7 @@ class TestBankClient:
         mock_response = make_mock_response(approved=True)
 
         async with BankClient(api_key=API_KEY, merchant_id=MERCHANT_ID) as bank:
+
             async def capture_post(url, **kwargs):
                 nonlocal payload
                 payload = kwargs.get("json", {})
