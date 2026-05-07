@@ -1,14 +1,16 @@
-import pytest
 from decimal import Decimal
+
+import pytest
 
 from payflow.schemas.domain import (
     CardInfo,
     CardNetwork,
     Currency,
     TransactionRequest,
-    TransactionStatus,
     TransactionResult,
+    TransactionStatus,
 )
+
 
 class TestCardInfo:
     def test_valid_card(self) -> None:

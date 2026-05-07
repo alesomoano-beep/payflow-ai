@@ -1,3 +1,4 @@
+from payflow.schemas.bank import BankTransactionPayload, BankTransactionResponse
 from payflow.schemas.domain import (
     BatchResult,
     CardInfo,
@@ -7,7 +8,6 @@ from payflow.schemas.domain import (
     TransactionResult,
     TransactionStatus,
 )
-from payflow.schemas.bank import BankTransactionPayload, BankTransactionResponse
 
 __all__ = [
     "BatchResult",

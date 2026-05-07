@@ -1,11 +1,12 @@
-import pytest
 from unittest.mock import patch
 
+import pytest
+
 from payflow.schemas.domain import (
-    TransactionStatus,
     TransactionRequest,
+    TransactionStatus,
 )
-from payflow.service import process_transaction, process_batch
+from payflow.service import process_batch, process_transaction
 
 
 class TestProcessTransaction:
@@ -58,6 +59,7 @@ class TestProcessBatch:
     @pytest.mark.asyncio
     async def test_batch_runs_in_parallel(self, basic_request: TransactionRequest) -> None:
         import time
+
         requests = [basic_request] * 10
         start = time.time()
         await process_batch(requests)

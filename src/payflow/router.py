@@ -1,12 +1,13 @@
 import logging
+from collections.abc import Iterator
 from contextlib import contextmanager
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
 
 from payflow.client import BankClientError, BankTimeoutError
-from payflow.service import process_batch, process_transaction
 from payflow.schemas.domain import BatchResult, TransactionRequest, TransactionResult
+from payflow.service import process_batch, process_transaction
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +15,7 @@ router = APIRouter(prefix="/payments", tags=["payments"])
 
 
 @contextmanager
-def _handle_bank_errors(log_context: str):
+def _handle_bank_errors(log_context: str) -> Iterator[None]:
     try:
         yield
     except BankTimeoutError:
