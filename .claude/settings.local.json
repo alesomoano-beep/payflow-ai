@@ -5,7 +5,12 @@
       "Bash(git commit:*)",
       "Bash(ruff check:*)",
       "Bash(gh run:*)",
-      "Bash(pytest:*)"
+      "Bash(pytest:*)",
+      "Bash(ruff --version)",
+      "Bash(python -c \"import ruff; print\\(ruff.__version__\\)\")",
+      "Bash(pre-commit run:*)",
+      "Bash(pre-commit install-hooks:*)",
+      "Bash(git push:*)"
     ]
   }
 }
