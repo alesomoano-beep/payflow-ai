@@ -5,7 +5,7 @@ Learning project to prepare a senior backend + AI profile.
 Full roadmap tracked in Claude.ai (saved conversation).
 
 ## Current phase
-Phase 2 — pytest, mocking, coverage
+Phase 3 — AI agents with LangGraph, MCP protocol, A2A
 
 ## Project structure
 ```
@@ -29,6 +29,25 @@ payflow-ai/
 ├── CLAUDE.md
 └── pyproject.toml
 ```
+
+## Phase 2 — decisions & lessons learned
+
+### Testing patterns
+- `pytest-asyncio` con `asyncio_mode = "auto"` — no hace falta `@pytest.mark.asyncio` en cada test (aunque se dejó por claridad)
+- `AsyncMock` para mockear coroutines; `MagicMock` para objetos síncronos
+- `patch.object(bank._client, "post", ...)` dentro del `async with` del context manager para no abrir conexiones reales
+- `nonlocal` + función captura para inspeccionar el payload que se enviaría al banco (test `test_amount_converted_to_cents`)
+- Fixtures en `conftest.py` compartidas entre todos los módulos de test
+
+### CI/CD
+- GitHub Actions en `.github/workflows/ci.yml`: ruff → mypy → pytest --cov (umbral 82%)
+- Pre-commit hooks: `ruff --fix`, `ruff-format`, `mypy`
+- **Lección clave**: pin la versión de ruff en `.pre-commit-config.yaml` y `pyproject.toml` a la misma (`>=0.15.0` / `v0.15.11`) para que el hook local y el CI apliquen las mismas reglas; discrepancias de versión causan que el hook revierta lo que el CI exige
+
+### Coverage alcanzada
+- Total: 94% (por encima del umbral de 82%)
+- `main.py` 84% — líneas de startup/shutdown difíciles de testear sin servidor real (se deja para fase 4)
+- `service.py` 81% — `process_batch_with_limit` (semaphore) y ramas de error cubiertos en fase 3
 
 ## Technical decisions
 

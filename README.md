@@ -63,14 +63,23 @@ curl -X POST http://localhost:8000/payments/authorize \
 
 ```bash
 pytest
-pytest --cov=payflow --cov-report=term-missing   # with coverage
+pytest --cov=payflow --cov-report=term-missing   # with coverage (94% current)
 ```
+
+## CI/CD
+
+GitHub Actions runs on every push to `main`/`develop`:
+1. `ruff check` — linting
+2. `mypy` — type checking
+3. `pytest --cov` — tests with 82% coverage threshold
+
+Pre-commit hooks enforce the same checks locally before every commit.
 
 ## Linting and type checking
 
 ```bash
-ruff check .          # linter
-ruff format .         # formatter
+ruff check src/       # linter
+ruff format src/      # formatter
 mypy src/             # type checker
 ```
 
@@ -102,7 +111,7 @@ payflow-ai/
 | Phase | Focus | Status |
 |-------|-------|--------|
 | 1 | Modern Python: Pydantic v2, asyncio, FastAPI | Done |
-| 2 | pytest, mocking, GitHub Actions CI/CD | In progress |
-| 3 | AI agents with LangGraph, MCP protocol, A2A | Pending |
+| 2 | pytest, mocking, GitHub Actions CI/CD | Done |
+| 3 | AI agents with LangGraph, MCP protocol, A2A | In progress |
 | 4 | AWS Lambda, API Gateway, CDK deployment | Pending |
 | 5 | Observability, ADR documentation, portfolio | Pending |
