@@ -30,6 +30,26 @@ payflow-ai/
 └── pyproject.toml
 ```
 
+## Phase 1 — decisions & lessons learned
+
+### Domain models (schemas/domain.py)
+- `Decimal` en lugar de `float` para evitar errores de precisión en importes monetarios
+- `StrEnum` para enums serializable directamente a JSON sin conversión extra
+- `frozen=True` en `TransactionResult` para inmutabilidad — los resultados no se modifican una vez creados
+- `model_validator` para validaciones cross-field (ej. límite especial de AMEX)
+- `BatchResult.approval_rate` como `@property` — dato derivado, no almacenado
+
+### API layer
+- `src/` layout con `pip install -e ".[dev]"` — imports limpios sin hacks de `sys.path`
+- `lifespan` con `asynccontextmanager` para startup/shutdown limpio (en lugar del deprecado `on_event`)
+- `_handle_bank_errors` como context manager síncrono en router — centraliza la conversión de excepciones a HTTP codes en un solo lugar
+- Batch limitado a 50 en el router (422 si se supera o está vacío) — validación en la capa HTTP, no en service
+
+### Async
+- `asyncio.gather` para paralelizar el batch — N transacciones en ~tiempo de 1
+- `asyncio.Semaphore` en `process_batch_with_limit` para rate limiting configurable
+- `BankClient` como async context manager — garantiza que `httpx.AsyncClient` se cierra siempre
+
 ## Phase 2 — decisions & lessons learned
 
 ### Testing patterns
