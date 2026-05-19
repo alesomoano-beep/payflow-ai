@@ -63,14 +63,23 @@ curl -X POST http://localhost:8000/payments/authorize \
 
 ```bash
 pytest
-pytest --cov=payflow --cov-report=term-missing   # with coverage
+pytest --cov=payflow --cov-report=term-missing   # with coverage (94% current)
 ```
+
+## CI/CD
+
+GitHub Actions runs on every push to `main`/`develop`:
+1. `ruff check` — linting
+2. `mypy` — type checking
+3. `pytest --cov` — tests with 82% coverage threshold
+
+Pre-commit hooks enforce the same checks locally before every commit.
 
 ## Linting and type checking
 
 ```bash
-ruff check .          # linter
-ruff format .         # formatter
+ruff check src/       # linter
+ruff format src/      # formatter
 mypy src/             # type checker
 ```
 
@@ -81,12 +90,24 @@ payflow-ai/
 ├── src/
 │   ├── payflow/
 │   │   ├── schemas/
-│   │   │   ├── domain.py   # Domain models: enums, TransactionRequest/Result, BatchResult
-│   │   │   └── bank.py     # Bank API contract models
-│   │   ├── service.py      # Business logic, async batch processing
-│   │   ├── client.py       # Async HTTP client (BankClient)
-│   │   ├── router.py       # FastAPI endpoints
-│   │   └── main.py         # App entrypoint and lifespan
+│   │   │   ├── domain.py       # Domain models: enums, TransactionRequest/Result, BatchResult
+│   │   │   └── bank.py         # Bank API contract models
+│   │   ├── agents/
+│   │   │   ├── validator.py    # Payment validation agent (rules + LLM)
+│   │   │   ├── fraud.py        # Fraud detection agent
+│   │   │   ├── risk.py         # Risk scoring agent
+│   │   │   └── orchestrator.py # LangGraph orchestration
+│   │   ├── llm/
+│   │   │   ├── base.py         # LLMProvider protocol + LLMProviderError
+│   │   │   ├── anthropic.py    # Anthropic Claude provider
+│   │   │   ├── gemini.py       # Google Gemini provider
+│   │   │   └── huggingface.py  # HuggingFace Inference API provider (default)
+│   │   ├── mcp/
+│   │   │   └── server.py       # MCP server
+│   │   ├── service.py          # Business logic, async batch processing
+│   │   ├── client.py           # Async HTTP client (BankClient)
+│   │   ├── router.py           # FastAPI endpoints
+│   │   └── main.py             # App entrypoint and lifespan
 │   └── tests/
 │       ├── conftest.py
 │       ├── test_models.py
@@ -102,7 +123,7 @@ payflow-ai/
 | Phase | Focus | Status |
 |-------|-------|--------|
 | 1 | Modern Python: Pydantic v2, asyncio, FastAPI | Done |
-| 2 | pytest, mocking, GitHub Actions CI/CD | In progress |
-| 3 | AI agents with LangGraph, MCP protocol, A2A | Pending |
+| 2 | pytest, mocking, GitHub Actions CI/CD | Done |
+| 3 | AI agents with LangGraph, MCP protocol, A2A | In progress |
 | 4 | AWS Lambda, API Gateway, CDK deployment | Pending |
 | 5 | Observability, ADR documentation, portfolio | Pending |

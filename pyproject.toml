@@ -1,3 +1,10 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [project]
 name = "payflow-ai"
 version = "0.1.0"
@@ -8,6 +15,13 @@ dependencies = [
     "pydantic>=2.7.0",
     "httpx>=0.27.0",
     "python-dotenv>=1.0.0",
+    "langgraph>=0.2.0",         
+    "langchain-anthropic>=0.2.0", 
+    "anthropic>=0.30.0",         
+    "google-genai>=1.0.0",
+    "huggingface-hub>=0.24.0",
+    "mcp>=1.0.0",
+    "cachetools>=5.3.0",
 ]
 
 [project.optional-dependencies]
@@ -17,6 +31,7 @@ dev = [
     "pytest-cov>=5.0.0",
     "mypy>=1.10.0",
     "ruff>=0.15.0",
+    "types-cachetools>=5.3.0",
 ]
 
 [tool.ruff]
