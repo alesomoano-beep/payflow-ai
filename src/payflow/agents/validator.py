@@ -3,7 +3,6 @@ import json
 import logging
 import time
 from decimal import Decimal
-from typing import cast
 
 from cachetools import LRUCache
 from pydantic import BaseModel
@@ -117,7 +116,7 @@ async def run_llm_analysis(
     key = _cache_key(request, rule_flags)
     if key in _cache:
         logger.info("llm_analysis_cache_hit", extra={"merchant_id": request.merchant_id})
-        return cast(LLMAnalysis, _cache[key])
+        return _cache[key]
 
     llm = provider or _default_provider
     t0 = time.monotonic()
