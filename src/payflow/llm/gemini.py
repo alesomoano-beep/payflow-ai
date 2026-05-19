@@ -51,14 +51,16 @@ class GeminiProvider:
                 "gemini_completion_ok",
                 extra={
                     "model": self._model,
-                    "input_tokens": response.usage_metadata.prompt_token_count,
-                    "output_tokens": response.usage_metadata.candidates_token_count,
+                    "input_tokens": response.usage_metadata.prompt_token_count if response.usage_metadata else None,
+                    "output_tokens": response.usage_metadata.candidates_token_count
+                    if response.usage_metadata
+                    else None,
                 },
             )
             parsed = response.parsed
             if parsed is not None:
                 return cast(T, parsed)
-            text = response.text
+            text = response.text or ""
             match = re.search(r"\{.*\}", text, re.DOTALL)
             if not match:
                 raise LLMProviderError(f"No JSON object found in response: {text!r}")

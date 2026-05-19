@@ -12,8 +12,6 @@ from payflow.llm import HuggingFaceProvider, LLMProvider, LLMProviderError
 from payflow.schemas.domain import CardNetwork, TransactionRequest
 
 logger = logging.getLogger(__name__)
-_cache: LRUCache = LRUCache(maxsize=1000)
-_default_provider: LLMProvider = HuggingFaceProvider()
 
 
 class ValidationResult(BaseModel):
@@ -27,6 +25,10 @@ class LLMAnalysis(BaseModel):
     approved: bool
     reason: str
     flags: list[str]
+
+
+_cache: LRUCache[str, LLMAnalysis] = LRUCache(maxsize=1000)
+_default_provider: LLMProvider = HuggingFaceProvider()
 
 
 SYSTEM_PROMPT_VERSION = "v1"
