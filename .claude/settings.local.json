@@ -20,7 +20,8 @@
       "Bash(pip list:*)",
       "Bash(pip uninstall:*)",
       "Bash(python -m pytest src/tests/ -q)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(pre-commit install:*)"
     ]
   }
 }
