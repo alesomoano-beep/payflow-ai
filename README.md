@@ -90,12 +90,24 @@ payflow-ai/
 ├── src/
 │   ├── payflow/
 │   │   ├── schemas/
-│   │   │   ├── domain.py   # Domain models: enums, TransactionRequest/Result, BatchResult
-│   │   │   └── bank.py     # Bank API contract models
-│   │   ├── service.py      # Business logic, async batch processing
-│   │   ├── client.py       # Async HTTP client (BankClient)
-│   │   ├── router.py       # FastAPI endpoints
-│   │   └── main.py         # App entrypoint and lifespan
+│   │   │   ├── domain.py       # Domain models: enums, TransactionRequest/Result, BatchResult
+│   │   │   └── bank.py         # Bank API contract models
+│   │   ├── agents/
+│   │   │   ├── validator.py    # Payment validation agent (rules + LLM)
+│   │   │   ├── fraud.py        # Fraud detection agent
+│   │   │   ├── risk.py         # Risk scoring agent
+│   │   │   └── orchestrator.py # LangGraph orchestration
+│   │   ├── llm/
+│   │   │   ├── base.py         # LLMProvider protocol + LLMProviderError
+│   │   │   ├── anthropic.py    # Anthropic Claude provider
+│   │   │   ├── gemini.py       # Google Gemini provider
+│   │   │   └── huggingface.py  # HuggingFace Inference API provider (default)
+│   │   ├── mcp/
+│   │   │   └── server.py       # MCP server
+│   │   ├── service.py          # Business logic, async batch processing
+│   │   ├── client.py           # Async HTTP client (BankClient)
+│   │   ├── router.py           # FastAPI endpoints
+│   │   └── main.py             # App entrypoint and lifespan
 │   └── tests/
 │       ├── conftest.py
 │       ├── test_models.py

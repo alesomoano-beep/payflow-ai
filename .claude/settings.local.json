@@ -10,7 +10,17 @@
       "Bash(python -c \"import ruff; print\\(ruff.__version__\\)\")",
       "Bash(pre-commit run:*)",
       "Bash(pre-commit install-hooks:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(pip install:*)",
+      "Bash(.venv/Scripts/pip install:*)",
+      "Bash(pip show:*)",
+      "Bash(.venv/Scripts/python.exe --version)",
+      "Bash(.venv/Scripts/pip.exe --version)",
+      "Bash(.venv/Scripts/pip.exe install:*)",
+      "Bash(pip list:*)",
+      "Bash(pip uninstall:*)",
+      "Bash(python -m pytest src/tests/ -q)",
+      "Bash(git rm:*)"
     ]
   }
 }

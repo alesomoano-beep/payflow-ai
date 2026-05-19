@@ -69,6 +69,22 @@ payflow-ai/
 - `main.py` 84% — líneas de startup/shutdown difíciles de testear sin servidor real (se deja para fase 4)
 - `service.py` 81% — `process_batch_with_limit` (semaphore) y ramas de error cubiertos en fase 3
 
+## Phase 3 — decisions & lessons learned
+
+### LLM providers (llm/)
+- `LLMProvider` como Protocol en `base.py` — permite intercambiar providers sin cambiar el agente
+- Tres providers implementados: `AnthropicProvider`, `GeminiProvider`, `HuggingFaceProvider`
+- **HuggingFaceProvider como default** (`Qwen/Qwen2.5-72B-Instruct`) — gratuito vía HF Inference API, suficiente para desarrollo
+- `complete_structured` recibe un `response_model: type[BaseModel]` e inyecta el JSON schema en el system prompt — structured output sin depender de function calling
+
+### Validator agent (agents/validator.py)
+- Arquitectura híbrida: reglas deterministas (`run_rules`) + análisis LLM (`run_llm_analysis`) + decisión final (`combine_results`)
+- Reglas deterministas primero — rápidas, auditables, sin coste de API
+- LRU cache (`cachetools`) keyed por sha256 del payload + versión de prompt — evita llamadas LLM duplicadas
+- `SYSTEM_PROMPT_VERSION` en la cache key — invalidación automática al cambiar el prompt
+- Fallback a `approved=False` si el LLM falla — fail-safe conservador para pagos
+- Provider inyectable en `run_validator(provider=...)` — facilita tests sin API real
+
 ## Technical decisions
 
 ### schemas/domain.py

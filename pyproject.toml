@@ -1,3 +1,10 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [project]
 name = "payflow-ai"
 version = "0.1.0"
@@ -11,7 +18,10 @@ dependencies = [
     "langgraph>=0.2.0",         
     "langchain-anthropic>=0.2.0", 
     "anthropic>=0.30.0",         
-    "mcp>=1.0.0",           
+    "google-genai>=1.0.0",
+    "huggingface-hub>=0.24.0",
+    "mcp>=1.0.0",
+    "cachetools>=5.3.0",
 ]
 
 [project.optional-dependencies]
@@ -21,6 +31,7 @@ dev = [
     "pytest-cov>=5.0.0",
     "mypy>=1.10.0",
     "ruff>=0.15.0",
+    "types-cachetools>=5.3.0",
 ]
 
 [tool.ruff]
@@ -38,6 +49,10 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = ["tests.*"]
 disable_error_code = ["misc", "no-untyped-def", "arg-type", "index"]
+
+[[tool.mypy.overrides]]
+module = ["cachetools.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
